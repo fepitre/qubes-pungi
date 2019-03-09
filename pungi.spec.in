@@ -13,6 +13,7 @@ Patch1: 0002-Verify-downloaded-packages.patch
 Patch2: 0003-Disable-EFI.patch
 Patch3: 0004-Hacky-way-to-pass-gpgkey-to-lorax.patch
 Patch4: 0005-pungi-legacy-expose-lorax-s-rootfs-size-argument.patch
+Patch5: 0006-tests-fix-metadata-tests-when-SOURCE_DATE_EPOCH-is-s.patch
 
 BuildRequires:  python3-nose
 BuildRequires:  python3-mock
