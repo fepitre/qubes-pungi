@@ -69,10 +69,9 @@ Requires:       python3-lxml
 Requires:       koji >= 1.10.1-13
 Requires:       python3-koji-cli-plugins
 Requires:       isomd5sum
-Requires:       genisoimage
+Requires:       xorriso
 Requires:       git
 Requires:       python3-jsonschema
-Requires:       libguestfs-tools-c
 Requires:       python3-enum34
 Requires:       python3-dnf
 Requires:       python3-multilib
