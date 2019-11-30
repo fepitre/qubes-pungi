@@ -1,4 +1,4 @@
-From a4dbfd7eb4e390a634c1505dad89cde593b0a640 Mon Sep 17 00:00:00 2001
+From 4228b6c42ea542670dbf381e1a2309144017ba91 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?=
  <marmarek@invisiblethingslab.com>
 Date: Tue, 29 Sep 2015 14:07:25 +0200
@@ -13,10 +13,10 @@ Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
  1 file changed, 14 insertions(+)
 
 diff --git a/pungi/gather.py b/pungi/gather.py
-index 8b013f1..597df81 100644
+index 0e33b5f..d50ec34 100644
 --- a/pungi/gather.py
 +++ b/pungi/gather.py
-@@ -1240,6 +1240,20 @@ class Pungi(PungiBase):
+@@ -1242,6 +1242,20 @@ class Pungi(PungiBase):
              sys.exit(1)
  
          for po in polist:
@@ -38,5 +38,5 @@ index 8b013f1..597df81 100644
  
              local = po.localPkg()
 -- 
-2.17.2
+2.21.0
 

@@ -1,18 +1,28 @@
-URL := https://pagure.io/releases/pungi/pungi-$(shell cat version).tar.bz2
-SRC_FILE := $(notdir $(URL))
+DIST ?= fc31
+VERSION := $(shell cat version)
+REL := $(shell cat rel)
 
-SHELL = bash
+SRC_RPM := pungi-$(VERSION)-$(REL).$(DIST).src.rpm
+SRC_FILE := pungi-$(VERSION).tar.bz2
+
+BUILDER_DIR ?= ../..
+SRC_DIR ?= qubes-src
+UNTRUSTED_SUFF := .UNTRUSTED
+FETCH_CMD := $(BUILDER_DIR)/$(SRC_DIR)/builder-rpm/scripts/get_sources_from_srpm
+
+SHELL := /bin/bash
+
+%: %.sha512 %$(UNTRUSTED_SUFF)
+	@sha512sum --status -c <(printf "$$(cat $<)  -\n") <$@$(UNTRUSTED_SUFF) || \
+		{ echo "Wrong SHA512 checksum on $@$(UNTRUSTED_SUFF)!"; exit 1; }
+	@mv $@$(UNTRUSTED_SUFF) $@
+
+$(SRC_FILE:%=%$(UNTRUSTED_SUFF)):
+	@$(FETCH_CMD) $(DIST) $(SRC_RPM) $(SRC_FILE)
 
 .PHONY: get-sources
 get-sources: $(SRC_FILE)
 
-UNTRUSTED_SUFF := .UNTRUSTED
-
-$(SRC_FILE): sources
-	@wget -q -N -O $@$(UNTRUSTED_SUFF) $(URL)
-	@sha256sum --status -c <(cat $< | sed -e 's:$(SRC_FILE):\0$(UNTRUSTED_SUFF):') || \
-		{ echo "Wrong SHA256 checksum on $@$(UNTRUSTED_SUFF)!"; exit 1; }
-	@mv $@$(UNTRUSTED_SUFF) $@
-
 .PHONY: verify-sources
 verify-sources:
+	@true
