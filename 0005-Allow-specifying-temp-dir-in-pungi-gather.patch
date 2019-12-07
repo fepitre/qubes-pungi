@@ -1,0 +1,58 @@
+From 98c043daa83b9f655c6009c5d800de88aada98dd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?=
+ <frederic.pierret@qubes-os.org>
+Date: Tue, 3 Dec 2019 09:48:54 +0100
+Subject: [PATCH] Allow specifying temp dir in pungi-gather
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+That fix invalid cross-device link when hardlinking when /tmp is a
+separate filesystem
+
+Signed-off-by: Frédéric Pierret (fepitre) <frederic.pierret@qubes-os.org>
+---
+ bin/pungi-gather | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/bin/pungi-gather b/bin/pungi-gather
+index fe99612..e4f4ee5 100755
+--- a/bin/pungi-gather
++++ b/bin/pungi-gather
+@@ -71,13 +71,16 @@ def get_parser():
+         metavar="[METHOD]",
+         action="append",
+     )
++    group.add_argument(
++        "--tempdir",
++        metavar="PATH",
++        help="path to temp dir (default: /tmp)",
++        default="/tmp",
++    )
+     return parser
+ 
+ 
+-def main(persistdir, cachedir):
+-    parser = get_parser()
+-    ns = parser.parse_args()
+-
++def main(ns, persistdir, cachedir):
+     dnf_conf = Conf(ns.arch)
+     dnf_conf.persistdir = persistdir
+     dnf_conf.cachedir = cachedir
+@@ -174,6 +177,9 @@ def print_rpms(gather_obj):
+ 
+ 
+ if __name__ == "__main__":
+-    with temp_dir(prefix='pungi_dnf_') as persistdir:
+-        with temp_dir(prefix='pungi_dnf_cache_') as cachedir:
+-            main(persistdir, cachedir)
++    parser = get_parser()
++    ns = parser.parse_args()
++
++    with temp_dir(dir=ns.tempdir, prefix="pungi_dnf_") as persistdir:
++        with temp_dir(dir=ns.tempdir, prefix="pungi_dnf_cache_") as cachedir:
++            main(ns, persistdir, cachedir)
+-- 
+2.21.0
+
