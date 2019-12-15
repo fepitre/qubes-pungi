@@ -1,0 +1,70 @@
+From 5589264a27848812ca872bd500fcc92aedd92286 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?=
+ <frederic.pierret@qubes-os.org>
+Date: Sun, 15 Dec 2019 11:48:53 +0100
+Subject: [PATCH 6/6] gather: handle metalink in kickstart repos
+
+---
+ bin/pungi-gather     | 19 +++++++++++++++----
+ pungi/dnf_wrapper.py |  4 +++-
+ 2 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/bin/pungi-gather b/bin/pungi-gather
+index e4f4ee5..84e1ea2 100755
+--- a/bin/pungi-gather
++++ b/bin/pungi-gather
+@@ -114,14 +114,25 @@ def main(ns, persistdir, cachedir):
+         # handling in hawkey
+         if ks_repo.name not in gather_opts.lookaside_repos:
+             continue
+-        dnf_obj.add_repo(
+-            ks_repo.name, ks_repo.baseurl, enablegroups=False
+-        )
++
++        if not ks_repo.metalink:
++            dnf_obj.add_repo(
++                ks_repo.name, ks_repo.baseurl, enablegroups=False
++            )
++        else:
++            dnf_obj.add_repo(
++                ks_repo.name, ks_repo.baseurl, enablegroups=False,
++                metalink=ks_repo.metalink
++            )
+ 
+     for ks_repo in ksparser.handler.repo.repoList:
+         if ks_repo.name in gather_opts.lookaside_repos:
+             continue
+-        dnf_obj.add_repo(ks_repo.name, ks_repo.baseurl)
++        if not ks_repo.metalink:
++            dnf_obj.add_repo(ks_repo.name, ks_repo.baseurl)
++        else:
++            dnf_obj.add_repo(ks_repo.name, ks_repo.baseurl,
++                             metalink=ks_repo.metalink)
+ 
+     with Profiler("DnfWrapper.fill_sack()"):
+         dnf_obj.fill_sack(load_system_repo=False, load_available_repos=True)
+diff --git a/pungi/dnf_wrapper.py b/pungi/dnf_wrapper.py
+index 798b2f8..de12ed1 100644
+--- a/pungi/dnf_wrapper.py
++++ b/pungi/dnf_wrapper.py
+@@ -52,7 +52,8 @@ class DnfWrapper(dnf.Base):
+         self.arch_wrapper = ArchWrapper(self.conf.substitutions["arch"])
+         self.comps_wrapper = CompsWrapper(self)
+ 
+-    def add_repo(self, repoid, baseurl=None, enablegroups=True, lookaside=False):
++    def add_repo(self, repoid, baseurl=None, enablegroups=True, lookaside=False,
++                 **kwargs):
+         self.repos.add_new_repo(
+             repoid,
+             self.conf,
+@@ -60,6 +61,7 @@ class DnfWrapper(dnf.Base):
+             enabledgroups=enablegroups,
+             priority=10 if lookaside else 20,
+             module_hotfixes=True,
++            **kwargs
+         )
+ 
+ 
+-- 
+2.21.0
+
