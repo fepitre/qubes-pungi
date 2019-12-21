@@ -1,6 +1,6 @@
 DIST ?= fc31
 VERSION := $(shell cat version)
-REL := $(shell cat rel)
+REL := 3
 
 SRC_RPM := pungi-$(VERSION)-$(REL).$(DIST).src.rpm
 SRC_FILE := pungi-$(VERSION).tar.bz2
