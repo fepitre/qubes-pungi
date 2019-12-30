@@ -1,0 +1,43 @@
+From 0139f45a2452bfb0de01563b679bb6d398a7567c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?=
+ <frederic.pierret@qubes-os.org>
+Date: Mon, 30 Dec 2019 12:37:19 +0100
+Subject: [PATCH] Verify downloaded packages
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Adapted from 4228b6c42ea542670dbf381e1a2309144017ba91
+By Marek Marczykowski-Gôrecki <marmarek@invisiblethingslab.com>
+---
+ pungi/gather_dnf.py | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/pungi/gather_dnf.py b/pungi/gather_dnf.py
+index 714c8d2..446cdb6 100644
+--- a/pungi/gather_dnf.py
++++ b/pungi/gather_dnf.py
+@@ -892,6 +892,20 @@ class Gather(GatherBase):
+         linker = Linker(logger=self.logger)
+ 
+         for pkg in pkglist:
++            result, errmsg = self.dnf._sig_check_pkg(pkg)
++
++            if result == 0:
++                # Verified ok, or verify not req'd
++                continue
++            elif result == 1:
++                # keys are provided through kickstart, so treat this as consent
++                # for importing them
++                self.dnf._get_key_for_package(pkg, lambda x, y, z: True)
++            else:
++                # Fatal error
++                self.logger.error(errmsg)
++                raise
++
+             basename = os.path.basename(pkg.relativepath)
+             target = os.path.join(destdir, basename)
+ 
+-- 
+2.21.0
+
