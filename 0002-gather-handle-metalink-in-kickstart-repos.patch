@@ -1,8 +1,8 @@
-From 5589264a27848812ca872bd500fcc92aedd92286 Mon Sep 17 00:00:00 2001
+From 373b32e451d323450fc60272dce8ec3acf13cdf0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?=
  <frederic.pierret@qubes-os.org>
 Date: Sun, 15 Dec 2019 11:48:53 +0100
-Subject: [PATCH 6/6] gather: handle metalink in kickstart repos
+Subject: [PATCH] gather: handle metalink in kickstart repos
 
 ---
  bin/pungi-gather     | 19 +++++++++++++++----
