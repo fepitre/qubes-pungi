@@ -1,4 +1,4 @@
-From 0139f45a2452bfb0de01563b679bb6d398a7567c Mon Sep 17 00:00:00 2001
+From 4b5546162ef2df218893b2ce7861494c939a64d6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?=
  <frederic.pierret@qubes-os.org>
 Date: Mon, 30 Dec 2019 12:37:19 +0100
@@ -14,7 +14,7 @@ By Marek Marczykowski-Gôrecki <marmarek@invisiblethingslab.com>
  1 file changed, 14 insertions(+)
 
 diff --git a/pungi/gather_dnf.py b/pungi/gather_dnf.py
-index 714c8d2..446cdb6 100644
+index 714c8d2..1a25999 100644
 --- a/pungi/gather_dnf.py
 +++ b/pungi/gather_dnf.py
 @@ -892,6 +892,20 @@ class Gather(GatherBase):
@@ -25,7 +25,7 @@ index 714c8d2..446cdb6 100644
 +
 +            if result == 0:
 +                # Verified ok, or verify not req'd
-+                continue
++                pass
 +            elif result == 1:
 +                # keys are provided through kickstart, so treat this as consent
 +                # for importing them
@@ -39,5 +39,5 @@ index 714c8d2..446cdb6 100644
              target = os.path.join(destdir, basename)
  
 -- 
-2.21.0
+2.21.1
 
