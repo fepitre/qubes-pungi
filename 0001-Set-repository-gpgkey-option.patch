@@ -1,7 +1,7 @@
-From 9ab796a4cde30163451c679b0440ddbe1a188ff8 Mon Sep 17 00:00:00 2001
+From d89c9a82398b437fe9514485a1869d7bff3296a0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?=
  <frederic.pierret@qubes-os.org>
-Date: Mon, 30 Dec 2019 11:51:36 +0100
+Date: Mon, 6 Apr 2020 13:18:39 +0200
 Subject: [PATCH] Set repository gpgkey option
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -12,30 +12,30 @@ Handle "repo --gpgkey" in kickstart to verify downloaded packages
 Adapted from b39587cc6e41beae0cde4b94365e65e3fa4a35bd
 By Marek Marczykowski-Gôrecki <marmarek@invisiblethingslab.com>
 ---
- bin/pungi-gather | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ pungi/scripts/pungi_gather.py | 31 ++++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
-diff --git a/bin/pungi-gather b/bin/pungi-gather
-index 84e1ea2..6fdabbe 100755
---- a/bin/pungi-gather
-+++ b/bin/pungi-gather
-@@ -115,24 +115,28 @@ def main(ns, persistdir, cachedir):
+diff --git a/pungi/scripts/pungi_gather.py b/pungi/scripts/pungi_gather.py
+index 01538e98..3f5c4c83 100644
+--- a/pungi/scripts/pungi_gather.py
++++ b/pungi/scripts/pungi_gather.py
+@@ -125,23 +125,28 @@ def main(ns, persistdir, cachedir):
          if ks_repo.name not in gather_opts.lookaside_repos:
              continue
  
--        if not ks_repo.metalink:
--            dnf_obj.add_repo(
--                ks_repo.name, ks_repo.baseurl, enablegroups=False
--            )
+-        if not getattr(ks_repo, "metalink", False):
+-            dnf_obj.add_repo(ks_repo.name, ks_repo.baseurl, enablegroups=False)
 -        else:
 -            dnf_obj.add_repo(
--                ks_repo.name, ks_repo.baseurl, enablegroups=False,
--                metalink=ks_repo.metalink
+-                ks_repo.name,
+-                ks_repo.baseurl,
+-                enablegroups=False,
+-                metalink=ks_repo.metalink,
 -            )
 +        kwargs = {}
-+        if ks_repo.metalink:
++        if getattr(ks_repo, "metalink", False):
 +            kwargs['metalink'] = ks_repo.metalink
-+        if ks_repo.gpgkey:
++        if getattr(ks_repo, "gpgcheck", False):
 +            kwargs['gpgcheck'] = 1
 +            kwargs['gpgkey'] = ks_repo.gpgkey
 +
@@ -45,15 +45,14 @@ index 84e1ea2..6fdabbe 100755
      for ks_repo in ksparser.handler.repo.repoList:
          if ks_repo.name in gather_opts.lookaside_repos:
              continue
--        if not ks_repo.metalink:
+-        if not getattr(ks_repo, "metalink", False):
 -            dnf_obj.add_repo(ks_repo.name, ks_repo.baseurl)
 -        else:
--            dnf_obj.add_repo(ks_repo.name, ks_repo.baseurl,
--                             metalink=ks_repo.metalink)
+-            dnf_obj.add_repo(ks_repo.name, ks_repo.baseurl, metalink=ks_repo.metalink)
 +        kwargs = {}
-+        if ks_repo.metalink:
++        if getattr(ks_repo, "metalink", False):
 +            kwargs['metalink'] = ks_repo.metalink
-+        if ks_repo.gpgkey:
++        if getattr(ks_repo, "gpgcheck", False):
 +            kwargs['gpgcheck'] = 1
 +            kwargs['gpgkey'] = ks_repo.gpgkey
 +
@@ -63,5 +62,5 @@ index 84e1ea2..6fdabbe 100755
      with Profiler("DnfWrapper.fill_sack()"):
          dnf_obj.fill_sack(load_system_repo=False, load_available_repos=True)
 -- 
-2.21.0
+2.25.1
 

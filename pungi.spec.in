@@ -10,11 +10,8 @@ License:        GPLv2
 URL:            https://pagure.io/pungi
 Source0:        https://pagure.io/releases/%{name}/%{name}-%{version}.tar.bz2
 
-Patch0: 0001-Allow-specifying-temp-dir-in-pungi-gather.patch
-Patch1: 0002-gather-handle-metalink-in-kickstart-repos.patch
-Patch2: 0003-Set-repository-gpgkey-option.patch
-Patch3: 0004-Verify-downloaded-packages.patch
-Patch4: 0005-pungi-gather-add-options-for-excluding-debug-and-sou.patch
+Patch0: 0001-Set-repository-gpgkey-option.patch
+Patch1: 0002-Verify-downloaded-packages.patch
 
 BuildRequires:  python3-nose
 BuildRequires:  python3-mock
